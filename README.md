@@ -22,30 +22,30 @@ So, with all that in place, our program could look like this:
 ```csharp
 async IStep<string?> Greet()
 {
-	await new WriteLine("What's your name, stranger?").Run();
+    await new WriteLine("What's your name, stranger?").Run();
 
-	var name = await new ReadLine().Run();
+    var name = await new ReadLine().Run();
 
-	await new WriteLine($"Hello {name}!").Run();
+    await new WriteLine($"Hello {name}!").Run();
 
-	return name;
+    return name;
 }
 ```
 
 Remember, all these `ReadLine()` and `WriteLine()` are some inanimate data structures we just declared, so they won't do anything on their own, but they look like the real thing, right? To bring the entire construct to life, what we need now is a runner that knows how to handle our program steps. Well, let's implement one:
 ```csharp
 class ConsoleIO :
-	IRun<ReadLine, string?>,
-	IRun<WriteLine, Void>
+    IRun<ReadLine, string?>,
+    IRun<WriteLine, Void>
 {
-	public Task<string?> Run(ReadLine command) => 
-		Task.FromResult(Console.ReadLine());
-	
-	public Task<Void> Run(WriteLine command)
-	{
-		Console.WriteLine(command.Text);
-		return Task.FromResult(default(Void));
-	}
+    public Task<string?> Run(ReadLine command) => 
+        Task.FromResult(Console.ReadLine());
+    
+    public Task<Void> Run(WriteLine command)
+    {
+        Console.WriteLine(command.Text);
+        return Task.FromResult(default(Void));
+    }
 }
 ```
 
