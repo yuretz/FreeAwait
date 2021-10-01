@@ -23,11 +23,8 @@ So, with all that in place, our program could look like this:
 async IStep<string?> Greet()
 {
     await new WriteLine("What's your name, stranger?").Run();
-
     var name = await new ReadLine().Run();
-
     await new WriteLine($"Hello {name}!").Run();
-
     return name;
 }
 ```
