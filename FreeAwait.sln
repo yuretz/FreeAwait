@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31710.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeAwait", "FreeAwait\FreeAwait.csproj", "{98563888-0002-4BC5-8B4E-F82D32B58119}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeAwait", "src\FreeAwait\FreeAwait.csproj", "{98563888-0002-4BC5-8B4E-F82D32B58119}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestIO", "TestIO\TestIO.csproj", "{F5DFB980-07D6-4E39-8EAA-719C46F3F0CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestIO", "samples\TestIO\TestIO.csproj", "{F5DFB980-07D6-4E39-8EAA-719C46F3F0CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
