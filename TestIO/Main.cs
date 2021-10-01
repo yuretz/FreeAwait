@@ -16,7 +16,7 @@ async Task Test(string path)
     await MonadicIOComputation(path).Use(new MockIO());
 }
 
-async IInstruction<Void> MonadicIOComputation(string path)
+async IStep<Void> MonadicIOComputation(string path)
 {
     var lines = (await new ReadAllLines(path).Run()).ToList();
     await new Log($"There are {lines.Count} lines").Run();
@@ -30,14 +30,14 @@ async IInstruction<Void> MonadicIOComputation(string path)
 
 struct Void { }
 
-record ReadAllLines(string Path): IInstruction<ReadAllLines, IEnumerable<string>>;
-record WriteAllLines(string Path, IEnumerable<string> Output): IInstruction<WriteAllLines, Void>;
-record Log(string Output): IInstruction<Log, Void>;
+record ReadAllLines(string Path): IStep<ReadAllLines, IEnumerable<string>>;
+record WriteAllLines(string Path, IEnumerable<string> Output): IStep<WriteAllLines, Void>;
+record Log(string Output): IStep<Log, Void>;
 
 interface IIOInterpreter: 
-    IInterpreter<ReadAllLines, IEnumerable<string>>,
-    IInterpreter<WriteAllLines, Void>,
-    IInterpreter<Log, Void>
+    IRun<ReadAllLines, IEnumerable<string>>,
+    IRun<WriteAllLines, Void>,
+    IRun<Log, Void>
 { }
 
 class LiveIO : IIOInterpreter

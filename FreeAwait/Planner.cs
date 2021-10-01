@@ -3,24 +3,24 @@ using System.Runtime.CompilerServices;
 
 namespace FreeAwait
 {
-	internal interface IInterpretable<out TThis>
+	internal interface IRunnable<out TThis>
 	{
-		TThis Use(IInterpreter interpreter);
+		TThis Use(IRun runner);
 	}
 
-	public class FreeAwaiter<TResult> : INotifyCompletion, IInterpretable<FreeAwaiter<TResult>>
+	public class Planner<TResult> : INotifyCompletion, IRunnable<Planner<TResult>>
 	{
 
-		public static FreeAwaiter<TResult> Create() => new();
+		public static Planner<TResult> Create() => new();
 
-		public FreeAwaiter()
+		public Planner()
 		{
-			Task = new Program<TResult>(this);
+			Task = new Plan<TResult>(this);
 		}
 
-		public FreeAwaiter(IInstruction<TResult> command)
+		public Planner(IStep<TResult> step)
 		{
-			Task = command;
+			Task = step;
 		}
 
 		// awaiter
@@ -38,7 +38,7 @@ namespace FreeAwait
 
 		// builder
 
-		public IInstruction<TResult> Task { get; }
+		public IStep<TResult> Task { get; }
 
 		public void SetResult(TResult result)
 		{
@@ -67,15 +67,15 @@ namespace FreeAwait
 			where TStateMachine : IAsyncStateMachine
 		{
 			awaiter.OnCompleted(stateMachine.MoveNext);
-			if (awaiter is IInterpretable<object> interpretable)
+			if (awaiter is IRunnable<object> runnable)
 			{
-				if (_interpreter is null)
+				if (_runner is null)
 				{
-					_pending = interpretable;
+					_pending = runnable;
 				}
 				else
 				{
-					interpretable.Use(_interpreter);
+					runnable.Use(_runner);
 				}
 			}
 		}
@@ -86,31 +86,31 @@ namespace FreeAwait
 			where TStateMachine : IAsyncStateMachine
 		{
 			awaiter.OnCompleted(stateMachine.MoveNext);
-			if (awaiter is IInterpretable<object> interpretable)
+			if (awaiter is IRunnable<object> runnable)
 			{
-				if (_interpreter is null)
+				if (_runner is null)
 				{
-					_pending = interpretable;
+					_pending = runnable;
 				}
 				else
 				{
-					interpretable.Use(_interpreter);
+					runnable.Use(_runner);
 				}
 			}
 		}
 
-		public FreeAwaiter<TResult> Use(IInterpreter interpreter)
+		public Planner<TResult> Use(IRun runner)
 		{
-			_interpreter = interpreter;
+			_runner = runner;
 
-			if (Task is Program<TResult>)
+			if (Task is Plan<TResult>)
 			{
-				_pending?.Use(interpreter);
+				_pending?.Use(runner);
 				_pending = null;
 			}
 			else if (!IsCompleted)
 			{
-				Task.Run(_interpreter).ContinueWith(task => SetResult(task.Result));
+				Task.Run(_runner).ContinueWith(task => SetResult(task.Result));
 			}
 
 			return this;
@@ -118,8 +118,8 @@ namespace FreeAwait
 
 		private TResult? _result;
 		private Exception? _error;
-		private IInterpreter? _interpreter;
-		private IInterpretable<object>? _pending;
+		private IRun? _runner;
+		private IRunnable<object>? _pending;
 		private Action? _continuation;
 	}
 }
