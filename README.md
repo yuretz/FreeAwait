@@ -46,7 +46,7 @@ class ConsoleIO :
 }
 ```
 
-With all that, we are now able to run your program:
+With all that, we are now able to run our program:
 ```csharp
 var name = await Greet().Use(new ConsoleIO());
 ```
