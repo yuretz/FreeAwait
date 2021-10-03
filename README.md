@@ -2,10 +2,10 @@
 Await anything for free!
 
 ## What
-A tiny .NET library implementing a free monad-like pattern with C# async/await.
+FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), while staying close to the idiomatic, imperative code style.
 
 ## How
-We start with adding the FreeAwait library to our usings:
+We start with adding the FreeAwait library to our using directives:
 ```csharp
 using FreeAwait;
 ```
@@ -24,24 +24,23 @@ async IStep<string?> Greet()
 {
     await new WriteLine("What's your name, stranger?").Run();
     var name = await new ReadLine().Run();
-    await new WriteLine($"Hello {name}!").Run();
+    await new WriteLine($"Greetings, {name}!").Run();
     return name;
 }
 ```
 
 Remember, all these `ReadLine()` and `WriteLine()` are some inanimate data structures we just declared, so they won't do anything on their own, but they look like the real thing, right? To bring the entire construct to life, what we need now is a runner that knows how to handle our program steps. Well, let's implement one:
 ```csharp
-class ConsoleIO :
+class ConsoleIO:
     IRun<ReadLine, string?>,
     IRun<WriteLine, Void>
 {
-    public Task<string?> Run(ReadLine command) => 
-        Task.FromResult(Console.ReadLine());
-    
-    public Task<Void> Run(WriteLine command)
+    public string? Run(ReadLine command) => Console.ReadLine();
+   
+    public Void Run(WriteLine command)
     {
         Console.WriteLine(command.Text);
-        return Task.FromResult(default(Void));
+        return default;
     }
 }
 ```
