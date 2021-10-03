@@ -7,9 +7,9 @@ namespace FreeAwait
     [AsyncMethodBuilder(typeof(Planner<>))]
     public interface IStep<TResult>
     {
-        IStep<TResult> Use(IRun runner) => GetAwaiter().Use(runner).Task;
+        IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
-        Task<TResult> Run(IRun runner);
+        void Run(IRunner runner, Action<TResult> next);
 
         Planner<TResult> GetAwaiter() => new(this);
     }
@@ -17,11 +17,21 @@ namespace FreeAwait
     public interface IStep<TStep, TResult> : IStep<TResult>
         where TStep : IStep<TResult>
     {
-        async Task<TResult> IStep<TResult>.Run(IRun runner) => runner is IRun<TStep, TResult> supported
-            ? await supported.Run((TStep)this)
-            : throw new NotSupportedException($"Runner ${runner.GetType().Name} doesn't accept {typeof(TStep).Name}");
+        void IStep<TResult>.Run(IRunner runner, Action<TResult> next)
+        {
+            switch(runner)
+            {
+                case IRunAsync<TStep, TResult> runAsync:
+                    runAsync.RunAsync((TStep)this).ContinueWith(task => next(task.Result));
+                    break;
 
-        public IStep<TResult> Task => this;
+                case IRun<TStep, TResult> run:
+                    next(run.Run((TStep)this));
+                    break;
+
+                default: throw new NotSupportedException($"Runner ${runner.GetType().Name} doesn't accept {typeof(TStep).Name}");
+            }
+        }
     }
 
     public static class StepExtensions

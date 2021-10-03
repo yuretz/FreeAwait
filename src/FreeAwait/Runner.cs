@@ -2,13 +2,19 @@
 
 namespace FreeAwait
 {
-    public interface IRun
+    public interface IRunner
     {
     }
 
-    public interface IRun<in TStep, TResult> : IRun
+    public interface IRunAsync<in TStep, TResult> : IRunner
         where TStep : IStep<TResult>
     {
-        Task<TResult> Run(TStep step);
+        Task<TResult> RunAsync(TStep step);
+    }
+
+    public interface IRun<in TStep, TResult> : IRunner
+        where TStep : IStep<TResult>
+    {
+        TResult Run(TStep step);
     }
 }

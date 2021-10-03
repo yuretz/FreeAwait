@@ -5,7 +5,7 @@ namespace FreeAwait
 {
     internal interface IRunnable<out TThis>
     {
-        TThis Use(IRun runner);
+        TThis Use(IRunner runner);
     }
 
     public class Planner<TResult> : INotifyCompletion, IRunnable<Planner<TResult>>
@@ -33,8 +33,8 @@ namespace FreeAwait
             _error is null
                 ? (IsCompleted
                     ? _result!
-                    : throw new InvalidOperationException("Instruction is not completed"))
-                : throw new SystemException("Interpretation error", _error);
+                    : throw new InvalidOperationException("Step is not completed"))
+                : throw new SystemException("Running error", _error);
 
         // builder
 
@@ -99,7 +99,7 @@ namespace FreeAwait
             }
         }
 
-        public Planner<TResult> Use(IRun runner)
+        public Planner<TResult> Use(IRunner runner)
         {
             _runner = runner;
 
@@ -110,7 +110,7 @@ namespace FreeAwait
             }
             else if (!IsCompleted)
             {
-                Task.Run(_runner).ContinueWith(task => SetResult(task.Result));
+                Task.Run(_runner, SetResult);
             }
 
             return this;
@@ -118,7 +118,7 @@ namespace FreeAwait
 
         private TResult? _result;
         private Exception? _error;
-        private IRun? _runner;
+        private IRunner? _runner;
         private IRunnable<object>? _pending;
         private Action? _continuation;
     }

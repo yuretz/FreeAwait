@@ -7,24 +7,23 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-await Test(Path.Combine(Directory.GetCurrentDirectory(), "rhyme.txt"));
+await Test("rhyme.txt");
 
 async Task Test(string path)
 {
-    await MonadicIOComputation(path).Use(new LiveIO());
-    
-    await MonadicIOComputation(path).Use(new MockIO());
+    await MonadicIOComputation(path, $"live-{path}").Use(new LiveInterpreter());
+    await MonadicIOComputation(path, $"async-{path}").Use(new LiveInterpreterAsync());
+    await MonadicIOComputation(path, $"mock-{path}").Use(new MockInterpreter());
 }
 
-async IStep<Void> MonadicIOComputation(string path)
+async IStep<Void> MonadicIOComputation(string inPath, string outPath)
 {
-    var lines = (await new ReadAllLines(path).Run()).ToList();
-    await new Log($"There are {lines.Count} lines").Run();
+    var lines = (await new ReadAllLines(inPath).Run()).ToList();
+    await new Log($"There are {lines.Count} lines in {inPath}").Run();
     await new Log("Prepending line numbers").Run();
     var newLines = Enumerable.Range(1, int.MaxValue).Zip(lines).Select(item => $"{item.First} {item.Second}");
-    await new WriteAllLines(path, newLines).Run();
-    await new Log("Lines prepended and file saved successfully").Run();
-
+    await new WriteAllLines(outPath, newLines).Run();
+    await new Log($"Lines prepended and {outPath} saved successfully").Run();
     return default;
 }
 
@@ -34,41 +33,66 @@ record ReadAllLines(string Path): IStep<ReadAllLines, IEnumerable<string>>;
 record WriteAllLines(string Path, IEnumerable<string> Output): IStep<WriteAllLines, Void>;
 record Log(string Output): IStep<Log, Void>;
 
-interface IIOInterpreter: 
+interface IInterpreter:
     IRun<ReadAllLines, IEnumerable<string>>,
     IRun<WriteAllLines, Void>,
     IRun<Log, Void>
+{ 
+}
+
+interface IInterpreterAsync: 
+    IRunAsync<ReadAllLines, IEnumerable<string>>,
+    IRunAsync<WriteAllLines, Void>,
+    IRunAsync<Log, Void>
 { }
 
-class LiveIO : IIOInterpreter
+class LiveInterpreter : IInterpreter
 {
-    public async Task<IEnumerable<string>> Run(ReadAllLines command) =>
+    public IEnumerable<string> Run(ReadAllLines command) =>
+        File.ReadAllLines(command.Path);
+
+    public Void Run(WriteAllLines command)
+    {
+        File.WriteAllLines(command.Path, command.Output);
+        return default;
+    }
+
+    public Void Run(Log command)
+    {
+        Console.WriteLine(command.Output);
+        return default;
+    }
+}
+
+
+class LiveInterpreterAsync : IInterpreterAsync
+{
+    public async Task<IEnumerable<string>> RunAsync(ReadAllLines command) =>
         await File.ReadAllLinesAsync(command.Path);
 
-    public async Task<Void> Run(WriteAllLines command)
+    public async Task<Void> RunAsync(WriteAllLines command)
     {
         await File.WriteAllLinesAsync(command.Path, command.Output);
         return default;
     }
 
-    public Task<Void> Run(Log command)
+    public Task<Void> RunAsync(Log command)
     {
         Console.WriteLine(command.Output);
         return Task.FromResult<Void>(default);
     }
-
 }
 
-class MockIO : IIOInterpreter
+class MockInterpreter : IInterpreter
 {
-    public Task<IEnumerable<string>> Run(ReadAllLines command) =>
-        Task.FromResult(new[] { "Hello", "World" }.AsEnumerable());
+    public IEnumerable<string> Run(ReadAllLines command) =>
+        new[] { "Hello", "World" }.AsEnumerable();
 
-    public Task<Void> Run(WriteAllLines command) => Task.FromResult<Void>(default);
+    public Void Run(WriteAllLines _) => default;
 
-    public Task<Void> Run(Log command)
+    public Void Run(Log command)
     {
         Console.WriteLine(command.Output);
-        return Task.FromResult<Void>(default);
+        return default;
     }
 }
