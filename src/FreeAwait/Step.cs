@@ -9,7 +9,7 @@ namespace FreeAwait
     {
         IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
-        void Run(IRunner runner, Action<TResult> next);
+        IStep<TResult> Run(IRunner runner, Action<TResult> next);
 
         Planner<TResult> GetAwaiter() => new(this);
     }
@@ -17,7 +17,7 @@ namespace FreeAwait
     public interface IStep<TStep, TResult> : IStep<TResult>
         where TStep : IStep<TResult>
     {
-        void IStep<TResult>.Run(IRunner runner, Action<TResult> next)
+        IStep<TResult> IStep<TResult>.Run(IRunner runner, Action<TResult> next)
         {
             switch(runner)
             {
@@ -31,6 +31,7 @@ namespace FreeAwait
 
                 default: throw new NotSupportedException($"Runner ${runner.GetType().Name} doesn't accept {typeof(TStep).Name}");
             }
+            return this;
         }
     }
 

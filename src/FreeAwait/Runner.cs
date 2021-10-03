@@ -17,4 +17,10 @@ namespace FreeAwait
     {
         TResult Run(TStep step);
     }
+
+    public static class RunnerExt
+    {
+        public static async Task<T> Run<T>(this IRunner runner, IStep<T> step) => await step.Use(runner);
+    }
+
 }
