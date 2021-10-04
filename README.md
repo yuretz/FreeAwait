@@ -2,10 +2,10 @@
 Await anything for free!
 
 ## What
-FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), while staying close to the idiomatic, imperative code style.
+FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), that comes without the need to give up on the good old idiomatic C# code style.
 
 ## How
-We start with adding the FreeAwait library to our using directives:
+Lets start with adding the FreeAwait library to our using directives:
 ```csharp
 using FreeAwait;
 ```
@@ -53,6 +53,6 @@ var name = await new ConsoleIO().Run(Greet());
 You can find more demo code in [samples](./samples).
 
 ## Why
-- purity, loose-coupling and testability;
+- control over side effects, loose coupling and better testability;
 - code that looks more idiomatic, than something you could achieve by composing LINQ expressions, as suggested by other good libraries;
 - it's free, freedom is worth a wait (terrible pun, sorry).
