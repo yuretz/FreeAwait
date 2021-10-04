@@ -5,18 +5,18 @@ await new ConsoleIO().Run(Talk());
 
 async IStep<Void> Talk()
 {
-    await new WriteLine("Let's talk...").Run();
+    await new WriteLine("Let's talk...");
     var name = await Greet();
-    await new WriteLine($"Just talked to {name}.").Run();
+    await new WriteLine($"Just talked to {name}.");
 
     return default;
 }
 
 async IStep<string?> Greet()
 {
-    await new WriteLine("What's your name, stranger?").Run();
-    var name = await new ReadLine().Run();
-    await new WriteLine($"Greetings, {name}!").Run();
+    await new WriteLine("What's your name, stranger?");
+    var name = await new ReadLine();
+    await new WriteLine($"Greetings, {name}!");
     return name;
 }
 

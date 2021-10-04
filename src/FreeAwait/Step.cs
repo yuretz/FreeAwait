@@ -11,15 +11,15 @@ namespace FreeAwait
 
         IStep<TResult> Run(IRunner runner, Action<TResult> next);
 
-        Planner<TResult> GetAwaiter() => new(this);
+        Planner<TResult> GetAwaiter();
     }
 
     public interface IStep<TStep, TResult> : IStep<TResult>
-        where TStep : IStep<TResult>
+        where TStep : IStep<TStep, TResult>
     {
         IStep<TResult> IStep<TResult>.Run(IRunner runner, Action<TResult> next)
         {
-            switch(runner)
+            switch (runner)
             {
                 case IRunAsync<TStep, TResult> runAsync:
                     runAsync.RunAsync((TStep)this).ContinueWith(task => next(task.Result));
@@ -33,10 +33,14 @@ namespace FreeAwait
             }
             return this;
         }
+
+        Planner<TResult> IStep<TResult>.GetAwaiter() => new(this);
     }
+
 
     public static class StepExtensions
     {
-        public static IStep<TResult> Run<TResult>(this IStep<TResult> step) => step;
+        public static Planner<TResult> GetAwaiter<TStep, TResult>(this IStep<TStep, TResult> step)
+            where TStep : IStep<TStep, TResult> => step.GetAwaiter();
     }
 }

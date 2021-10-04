@@ -22,9 +22,9 @@ So, with all that in place, our program could look like this:
 ```csharp
 async IStep<string?> Greet()
 {
-    await new WriteLine("What's your name, stranger?").Run();
-    var name = await new ReadLine().Run();
-    await new WriteLine($"Greetings, {name}!").Run();
+    await new WriteLine("What's your name, stranger?");
+    var name = await new ReadLine();
+    await new WriteLine($"Greetings, {name}!");
     return name;
 }
 ```

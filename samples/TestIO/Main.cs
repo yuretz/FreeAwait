@@ -18,12 +18,12 @@ async Task Test(string path)
 
 async IStep<Void> MonadicIOComputation(string inPath, string outPath)
 {
-    var lines = (await new ReadAllLines(inPath).Run()).ToList();
-    await new Log($"There are {lines.Count} lines in {inPath}").Run();
-    await new Log("Prepending line numbers").Run();
+    var lines = (await new ReadAllLines(inPath)).ToList();
+    await new Log($"There are {lines.Count} lines in {inPath}");
+    await new Log("Prepending line numbers");
     var newLines = Enumerable.Range(1, int.MaxValue).Zip(lines).Select(item => $"{item.First} {item.Second}");
-    await new WriteAllLines(outPath, newLines).Run();
-    await new Log($"Lines prepended and {outPath} saved successfully").Run();
+    await new WriteAllLines(outPath, newLines);
+    await new Log($"Lines prepended and {outPath} saved successfully");
     return default;
 }
 
