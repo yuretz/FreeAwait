@@ -29,7 +29,9 @@ namespace FreeAwait
                     next(run.Run((TStep)this));
                     break;
 
-                default: throw new NotSupportedException($"Runner ${runner.GetType().Name} doesn't accept {typeof(TStep).Name}");
+                default:
+                    runner.Run((TStep)this, next);
+                    break;
             }
             return this;
         }
