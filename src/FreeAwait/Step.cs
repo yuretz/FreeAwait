@@ -6,12 +6,20 @@ namespace FreeAwait
 {
     [AsyncMethodBuilder(typeof(Planner<>))]
     public interface IStep<TResult>
-    {
+    {            
         IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
         IStep<TResult> Run(IRunner runner, Action<TResult> next);
 
         Planner<TResult> GetAwaiter();
+
+        async IStep<TNext> Next<TNext>(Func<TResult, IStep<TNext>> next) 
+        {
+            var thisResult = await this;
+            var nextResult = await next(thisResult);
+            return nextResult;
+        }
+            
     }
 
     public interface IStep<TStep, TResult> : IStep<TResult>
@@ -40,9 +48,17 @@ namespace FreeAwait
     }
 
 
-    public static class StepExtensions
+    public static class Step
     {
         public static Planner<TResult> GetAwaiter<TStep, TResult>(this IStep<TStep, TResult> step)
             where TStep : IStep<TStep, TResult> => step.GetAwaiter();
+
+        public static IStep<TResult> Result<TResult>(TResult value)
+        {
+            var planner = new Planner<TResult>();
+            planner.SetResult(value);
+            return planner.Task;
+        }
+
     }
 }

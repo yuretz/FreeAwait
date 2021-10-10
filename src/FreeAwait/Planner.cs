@@ -38,12 +38,17 @@ namespace FreeAwait
 
         // builder
 
-        public IStep<TResult> Task { get; }
+        public IStep<TResult> Task { get; private set; }
 
         public void SetResult(TResult result)
         {
             _result = result;
             IsCompleted = true;
+            if(Task is not Plan<TResult>)
+            {
+                // substitute original task with the completed one
+                Task = new Plan<TResult>(this);
+            }
             _continuation?.Invoke();
         }
 
