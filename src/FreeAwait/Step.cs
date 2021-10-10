@@ -13,7 +13,7 @@ namespace FreeAwait
 
         Planner<TResult> GetAwaiter();
 
-        async IStep<TNext> Next<TNext>(Func<TResult, IStep<TNext>> next) 
+        async IStep<TNext> PassTo<TNext>(Func<TResult, IStep<TNext>> next) 
         {
             var thisResult = await this;
             var nextResult = await next(thisResult);

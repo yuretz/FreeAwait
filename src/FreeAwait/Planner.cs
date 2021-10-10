@@ -15,7 +15,7 @@ namespace FreeAwait
 
         public Planner()
         {
-            Task = new Plan<TResult>(this);
+            Task = new Result<TResult>(this);
         }
 
         public Planner(IStep<TResult> step)
@@ -44,10 +44,10 @@ namespace FreeAwait
         {
             _result = result;
             IsCompleted = true;
-            if(Task is not Plan<TResult>)
+            if(Task is not Result<TResult>)
             {
                 // substitute original task with the completed one
-                Task = new Plan<TResult>(this);
+                Task = new Result<TResult>(this);
             }
             _continuation?.Invoke();
         }
@@ -108,7 +108,7 @@ namespace FreeAwait
         {
             _runner = runner;
 
-            if (Task is Plan<TResult>)
+            if (Task is Result<TResult>)
             {
                 _pending?.Use(runner);
                 _pending = null;

@@ -41,7 +41,7 @@ namespace FreeAwait.Tests
         public async Task LeftResultIdentity()
         {
 
-            Assert.Equal(await Step.Result(42).Next(f),  await f(42));
+            Assert.Equal(await Step.Result(42).PassTo(f),  await f(42));
 
             static IStep<int> f(int value) => Step.Result(value + 1);
         }
@@ -49,7 +49,7 @@ namespace FreeAwait.Tests
         [Fact]
         public async Task RightResultIdentity()
         {
-            Assert.Equal(await Step.Result(42), await Step.Result(42).Next(f));
+            Assert.Equal(await Step.Result(42), await Step.Result(42).PassTo(f));
 
             static IStep<int> f(int value) => Step.Result(value);
         }
@@ -59,7 +59,7 @@ namespace FreeAwait.Tests
         {
             var runner = new Runner1();
                 
-            Assert.Equal(await runner.Run(Step.Result("foo").Next(f)), await runner.Run(f("foo")));
+            Assert.Equal(await runner.Run(Step.Result("foo").PassTo(f)), await runner.Run(f("foo")));
 
             static IStep<int> f(string text) => new Count(text);
         }
@@ -71,7 +71,7 @@ namespace FreeAwait.Tests
 
             Assert.Equal(
                 await runner.Run((IStep<Count, int>)new Count("bar")), 
-                await runner.Run(((IStep<Count, int>)new Count("bar")).Next(f)));
+                await runner.Run(((IStep<Count, int>)new Count("bar")).PassTo(f)));
 
             static IStep<int> f(int value) => Step.Result(value);
         }

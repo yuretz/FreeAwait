@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace FreeAwait
 {
-    internal struct Plan<TResult> : IStep<TResult>
+    internal struct Result<TResult> : IStep<TResult>
     {
-        public Plan(Planner<TResult> planner)
+        public Result(Planner<TResult> planner)
         {
             _planner = planner;
         }
