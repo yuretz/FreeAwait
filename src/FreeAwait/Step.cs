@@ -12,14 +12,6 @@ namespace FreeAwait
         IStep<TResult> Run(IRunner runner, Action<TResult> next);
 
         Planner<TResult> GetAwaiter();
-
-        async IStep<TNext> PassTo<TNext>(Func<TResult, IStep<TNext>> next) 
-        {
-            var thisResult = await this;
-            var nextResult = await next(thisResult);
-            return nextResult;
-        }
-            
     }
 
     public interface IStep<TStep, TResult> : IStep<TResult>
@@ -60,5 +52,8 @@ namespace FreeAwait
             return planner.Task;
         }
 
+        public static async IStep<TNext> PassTo<TResult, TNext>(
+            this IStep<TResult> step, 
+            Func<TResult, IStep<TNext>> next) => await next(await step);
     }
 }
