@@ -102,12 +102,47 @@ namespace FreeAwait.Tests
             async IStep<int> f11() => await new Twice(await Step.Result(5));
             async IStep<int> f2() => await f21(await Step.Result(5));
             async IStep<int> f21(int x) => await new ThreeMore(await new Twice(x));
-
         }
+
+        [Fact]
+        public async Task UnknownStep()
+        {
+            var runner = new Runner1();
+
+            await Assert.ThrowsAnyAsync<Exception>(async() => await runner.Run(f()));
+
+            static async IStep<int> f() => await new Twice(2) + await new Unknown(42);
+        }
+
+        [Fact]
+        public async Task SyncScenario()
+        {
+            var runner = new Runner1();
+            Assert.Equal(42, await runner.Run(FortyTwo()));
+        }
+
+        [Fact]
+        public async Task AsyncScenario()
+        {
+            var runner = new AsyncRunner1();
+            Assert.Equal(42, await runner.Run(FortyTwo()));
+        }
+
+        [Fact]
+        public async Task DynamicScenario()
+        {
+            var runner = new DynamicRunner1();
+            Assert.Equal(42, await runner.Run(FortyTwo()));
+        }
+
+        private async IStep<int> FortyTwo() =>
+            await new Twice(await new ThreeMore(await new Twice(await new Count("forty two"))));
+        
 
         private record Count(string Text): IStep<Count, int>;
         private record Twice(int Number): IStep<Twice, int>;
         private record ThreeMore(int Number): IStep<ThreeMore, int>;
+        private record Unknown(int Number): IStep<Unknown, int>;
 
         private class Runner1 : 
             IRun<Count, int>,
@@ -125,5 +160,31 @@ namespace FreeAwait.Tests
         {
             public int Run(Count step) => step.Text.Count("aeuio".Contains);
         }
+
+        private class AsyncRunner1:
+            IRunAsync<Count, int>,
+            IRunAsync<Twice, int>,
+            IRunAsync<ThreeMore, int>
+        {
+            public Task<int> RunAsync(Count step) => Task.Run(() => step.Text.Length);
+
+            public Task<int> RunAsync(Twice step) => Task.Run(() => step.Number * 2);
+
+            public Task<int> RunAsync(ThreeMore step) => Task.Run(() => step.Number + 3);
+        }
+
+        private class DynamicRunner1: IRunner
+        {
+            public void Run<TStep, TResult>(IStep<TStep, TResult> step, Action<TResult> next)
+                where TStep : IStep<TStep, TResult> =>
+                next((TResult)(object)(step switch
+                {
+                    Count count => count.Text.Length,
+                    Twice twice => twice.Number * 2,
+                    ThreeMore threeMore => threeMore.Number + 3,
+                    _ => throw new NotSupportedException()
+                }));
+        }
+
     }
 }
