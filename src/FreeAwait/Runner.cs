@@ -22,6 +22,12 @@ namespace FreeAwait
         TResult Run(TStep step);
     }
 
+    public interface IRunStep<in TStep, TResult> : IRunner
+        where TStep : IStep<TStep, TResult>
+    {
+        IStep<TResult> RunStep(TStep step);
+    }
+
     public static class RunnerExt
     {
         public static async IStep<T> Run<T>(this IRunner runner, IStep<T> step) => await step.Use(runner);

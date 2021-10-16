@@ -14,9 +14,10 @@ namespace FreeAwait
 
         public IStep<TResult> Use(IRunner runner) => _planner.Use(runner).Task;
 
-        public async IStep<TResult> Run(IRunner runner, Action<TResult> next)
+        public async IStep<TResult>? Run(IRunner runner, Action<TResult> next)
         {
-            var result = await Use(runner);
+            
+            var result = _planner.IsCompleted ? _planner.GetResult() : await Use(runner);
             next(result);
             return result;
         }     

@@ -27,7 +27,11 @@ namespace FreeAwait
 
         public bool IsCompleted { get; private set; }
 
-        public void OnCompleted(Action continuation) => _continuation = continuation;
+        public void OnCompleted(Action continuation)
+        {
+            _continuation = continuation;
+            RunToCompletion();
+        }
 
         public TResult GetResult() =>
             _error is null
@@ -83,34 +87,28 @@ namespace FreeAwait
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(
             ref TAwaiter awaiter, ref TStateMachine stateMachine)
             where TAwaiter : ICriticalNotifyCompletion
-            where TStateMachine : IAsyncStateMachine
-        {
-            awaiter.OnCompleted(stateMachine.MoveNext);
-            if (awaiter is IRunnable<object> runnable)
-            {
-                if (_runner is null)
-                {
-                    _pending = runnable;
-                }
-                else
-                {
-                    runnable.Use(_runner);
-                }
-            }
-        }
+            where TStateMachine : IAsyncStateMachine =>
+            AwaitOnCompleted(ref awaiter, ref stateMachine);
 
         public Planner<TResult> Use(IRunner runner)
         {
             _runner = runner;
-            _pending?.Use(runner);
-            _pending = null;
 
-            if (!IsCompleted)
-            {   
-                _step?.Run(runner, SetResult);
-            }
+            RunToCompletion();
 
             return this;
+        }
+
+        private void RunToCompletion()
+        {
+            if(_runner is null || _continuation is null)
+            {
+                return;
+            }
+            _pending?.Use(_runner);
+            _pending = null;
+
+            for (var step = _step; !IsCompleted && step is not null; step = step.Run(_runner, SetResult)) { };
         }
 
         private TResult? _result;

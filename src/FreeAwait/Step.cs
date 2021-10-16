@@ -9,7 +9,7 @@ namespace FreeAwait
     {            
         IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
-        IStep<TResult> Run(IRunner runner, Action<TResult> next);
+        IStep<TResult>? Run(IRunner runner, Action<TResult> next);
 
         Planner<TResult> GetAwaiter();
     }
@@ -17,23 +17,26 @@ namespace FreeAwait
     public interface IStep<TStep, TResult> : IStep<TResult>
         where TStep : IStep<TStep, TResult>
     {
-        IStep<TResult> IStep<TResult>.Run(IRunner runner, Action<TResult> next)
+        IStep<TResult>? IStep<TResult>.Run(IRunner runner, Action<TResult> next)
         {
             switch (runner)
             {
                 case IRunAsync<TStep, TResult> runAsync:
                     runAsync.RunAsync((TStep)this).ContinueWith(task => next(task.Result));
-                    break;
+                    return null;
 
                 case IRun<TStep, TResult> run:
                     next(run.Run((TStep)this));
-                    break;
+                    return null;
+
+                case IRunStep<TStep, TResult> runStep:
+                    return runStep.RunStep((TStep)this);
 
                 default:
                     runner.Run((TStep)this, next);
-                    break;
+                    return null;
             }
-            return this;
+            
         }
 
         Planner<TResult> IStep<TResult>.GetAwaiter() => new(this);
@@ -55,5 +58,8 @@ namespace FreeAwait
         public static async IStep<TNext> PassTo<TResult, TNext>(
             this IStep<TResult> step, 
             Func<TResult, IStep<TNext>> next) => await next(await step);
+
+        public static IStep<TResult> Suspend<TResult>(Func<IStep<TResult>> resume) => 
+            new Suspend<TResult>(resume);
     }
 }

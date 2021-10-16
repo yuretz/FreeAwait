@@ -135,14 +135,30 @@ namespace FreeAwait.Tests
             Assert.Equal(42, await runner.Run(FortyTwo()));
         }
 
+        [Fact]
+        public async Task RecursiveScenario()
+        {
+            var runner = new RecursiveRunner();
+            Assert.Equal(120, await runner.Run(new Factor(5)));
+        }
+
+        [Fact]
+        public async Task SuspendStep()
+        {
+            var runner = new Runner1();
+
+            Assert.Equal(3, await runner.Run(Step.Suspend(() => new Count("foo"))));
+        }
+
         private async IStep<int> FortyTwo() =>
             await new Twice(await new ThreeMore(await new Twice(await new Count("forty two"))));
-        
 
         private record Count(string Text): IStep<Count, int>;
         private record Twice(int Number): IStep<Twice, int>;
         private record ThreeMore(int Number): IStep<ThreeMore, int>;
         private record Unknown(int Number): IStep<Unknown, int>;
+        private record Factor(int N): IStep<Factor, int>;
+
 
         private class Runner1 : 
             IRun<Count, int>,
@@ -184,6 +200,13 @@ namespace FreeAwait.Tests
                     ThreeMore threeMore => threeMore.Number + 3,
                     _ => throw new NotSupportedException()
                 }));
+        }
+
+        private class RecursiveRunner : IRunStep<Factor, int>
+        {
+            public async IStep<int> RunStep(Factor step) => step.N <= 1
+                ? step.N
+                : await new Factor(step.N - 1) * step.N;
         }
 
     }
