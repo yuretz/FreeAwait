@@ -3,12 +3,12 @@ using System.Runtime.CompilerServices;
 
 namespace FreeAwait
 {
-    internal interface IRunnable<out TThis>
+    public interface IRunnable
     {
-        TThis Use(IRunner runner);
+        IRunnable? Run(IRunner runner);
     }
 
-    public class Planner<TResult> : INotifyCompletion, IRunnable<Planner<TResult>>
+    public class Planner<TResult> : INotifyCompletion, IRunnable
     {
 
         public static Planner<TResult> Create() => new();
@@ -30,7 +30,6 @@ namespace FreeAwait
         public void OnCompleted(Action continuation)
         {
             _continuation = continuation;
-            RunToCompletion();
         }
 
         public TResult GetResult() =>
@@ -71,7 +70,7 @@ namespace FreeAwait
             where TStateMachine : IAsyncStateMachine
         {
             awaiter.OnCompleted(stateMachine.MoveNext);
-            if (awaiter is IRunnable<object> runnable)
+            if (awaiter is IRunnable runnable)
             {
                 if (_runner is null)
                 {
@@ -79,7 +78,7 @@ namespace FreeAwait
                 }
                 else
                 {
-                    runnable.Use(_runner);
+                    Use(_runner, runnable);
                 }
             }
         }
@@ -92,29 +91,31 @@ namespace FreeAwait
 
         public Planner<TResult> Use(IRunner runner)
         {
-            _runner = runner;
-
-            RunToCompletion();
-
+            Use(runner, this);
             return this;
         }
 
-        private void RunToCompletion()
+        public IRunnable? Run(IRunner runner)
         {
-            if(_runner is null || _continuation is null)
+            _runner = runner;
+            if(_pending is not null)
             {
-                return;
+                return _pending.Run(runner);
             }
-            _pending?.Use(_runner);
-            _pending = null;
 
-            for (var step = _step; !IsCompleted && step is not null; step = step.Run(_runner, SetResult)) { };
+            _step = _step?.Run(runner, SetResult);
+            return !IsCompleted && _step is not null ? this : null;
+        }
+
+        private static void Use(IRunner runner, IRunnable? runnable)
+        {
+            for (; runnable is not null; runnable = runnable.Run(runner)) ;
         }
 
         private TResult? _result;
         private Exception? _error;
         private IRunner? _runner;
-        private IRunnable<object>? _pending;
+        private IRunnable? _pending;
         private IStep<TResult>? _step;
         private Action? _continuation;
     }
