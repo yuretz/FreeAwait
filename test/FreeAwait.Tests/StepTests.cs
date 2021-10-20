@@ -143,6 +143,29 @@ namespace FreeAwait.Tests
         }
 
         [Fact]
+        public async Task RecursiveScenario2()
+        {
+            var runner = new RecursiveRunner();
+            Assert.Equal(120, await runner.Run(Factor(5)));
+
+            static async IStep<int> Factor(int N) => N <= 1 ? N : await Factor(N - 1) * N;
+        }
+
+        [Fact]
+        public async Task TailRecursion1()
+        {
+            var runner = new RecursiveRunner();
+            Assert.Equal(2111485077978050, await runner.Run(new Fib(75)));
+        }
+
+        [Fact]
+        public async Task TailRecursion2()
+        {
+            var runner = new RecursiveRunner();
+            Assert.Equal(50005000, await runner.Run(new Sum(10000)));
+        }
+
+        [Fact]
         public async Task SuspendStep()
         {
             var runner = new Runner1();
@@ -157,8 +180,6 @@ namespace FreeAwait.Tests
         private record Twice(int Number): IStep<Twice, int>;
         private record ThreeMore(int Number): IStep<ThreeMore, int>;
         private record Unknown(int Number): IStep<Unknown, int>;
-        private record Factor(int N): IStep<Factor, int>;
-
 
         private class Runner1 : 
             IRun<Count, int>,
@@ -202,11 +223,25 @@ namespace FreeAwait.Tests
                 }));
         }
 
-        private class RecursiveRunner : IRunStep<Factor, int>
+        private record Factor(int N) : IStep<Factor, int>;
+        private record Fib(int N, long Current = 1, long Previous = 0) : IStep<Fib, long>;
+        private record Sum(int N, int Result = 0): IStep<Sum, int>;
+
+        private class RecursiveRunner : 
+            IRunStep<Factor, int>,
+            IRunStep<Fib, long>,
+            IRunStep<Sum, int>
         {
-            public async IStep<int> RunStep(Factor step) => step.N <= 1
-                ? step.N
-                : await new Factor(step.N - 1) * step.N;
+            public async IStep<int> RunStep(Factor step) => step.N <= 1 ? 1 : await new Factor(step.N - 1) * step.N;
+
+            public IStep<long> RunStep(Fib step) => step.N <= 1
+                ? Step.Result(step.Current)
+                : new Fib(step.N - 1, step.Current + step.Previous, step.Current);
+
+            public IStep<int> RunStep(Sum step) => step.N <= 0 
+                ? Step.Result(step.Result) 
+                : new Sum(step.N - 1, step.Result + step.N);
+
         }
 
     }

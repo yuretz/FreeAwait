@@ -8,15 +8,12 @@ namespace FreeAwait
         IRunnable? Run(IRunner runner);
     }
 
-    public class Planner<TResult> : INotifyCompletion, IRunnable
+    public class Planner<TResult> : INotifyCompletion, IRunnable, IStep<TResult>
     {
 
         public static Planner<TResult> Create() => new();
 
-        public Planner()
-        {
-            Task = new Result<TResult>(this);
-        }
+        public Planner() { }
 
         public Planner(IStep<TResult> step): this()
         {
@@ -41,7 +38,7 @@ namespace FreeAwait
 
         // builder
 
-        public IStep<TResult> Task { get; private set; }
+        public IStep<TResult> Task => this;
 
         public void SetResult(TResult result)
         {
@@ -106,6 +103,23 @@ namespace FreeAwait
             _step = _step?.Run(runner, SetResult);
             return !IsCompleted && _step is not null ? this : null;
         }
+
+        // result
+
+        public IStep<TResult> Run(IRunner runner, Action<TResult> next)
+        {
+            if(IsCompleted)
+            {
+                next(GetResult());
+                return this;
+            }
+            
+            OnCompleted(() => next(GetResult()));
+            Use(runner, this);
+            return this;
+        }
+
+        public Planner<TResult> GetAwaiter() => this;
 
         private static void Use(IRunner runner, IRunnable? runnable)
         {
