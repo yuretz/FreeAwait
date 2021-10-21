@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestIO", "samples\TestIO\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Greet", "samples\Greet\Greet.csproj", "{ACC89DB4-3112-40B6-8D16-7E31AA81C673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeAwait.Tests", "test\FreeAwait.Tests\FreeAwait.Tests.csproj", "{A1338AE3-2C21-4F14-AFD2-398AC1CDDFFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeAwait.Tests", "test\FreeAwait.Tests\FreeAwait.Tests.csproj", "{A1338AE3-2C21-4F14-AFD2-398AC1CDDFFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeAwait.Extensions.AspNetCore", "FreeAwait.Extensions.AspNetCore\FreeAwait.Extensions.AspNetCore.csproj", "{AA82A3B1-9872-411A-AC07-E99709BAB304}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{66E6F77F-81DD-4988-9C59-3FE1F25E21BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,17 @@ Global
 		{A1338AE3-2C21-4F14-AFD2-398AC1CDDFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1338AE3-2C21-4F14-AFD2-398AC1CDDFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1338AE3-2C21-4F14-AFD2-398AC1CDDFFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA82A3B1-9872-411A-AC07-E99709BAB304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA82A3B1-9872-411A-AC07-E99709BAB304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA82A3B1-9872-411A-AC07-E99709BAB304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA82A3B1-9872-411A-AC07-E99709BAB304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F5DFB980-07D6-4E39-8EAA-719C46F3F0CD} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
+		{ACC89DB4-3112-40B6-8D16-7E31AA81C673} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14868022-AC29-4954-A356-8764FCF1EBEA}
