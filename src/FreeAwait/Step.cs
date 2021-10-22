@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 
 namespace FreeAwait
 {
+    public interface IStep { }
+
     [AsyncMethodBuilder(typeof(Planner<>))]
-    public interface IStep<TResult>
+    public interface IStep<TResult>: IStep
     {            
         IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
@@ -17,27 +19,8 @@ namespace FreeAwait
     public interface IStep<TStep, TResult> : IStep<TResult>
         where TStep : IStep<TStep, TResult>
     {
-        IStep<TResult>? IStep<TResult>.Run(IRunner runner, Action<TResult> next)
-        {
-            switch (runner)
-            {
-                case IRunAsync<TStep, TResult> runAsync:
-                    runAsync.RunAsync((TStep)this).ContinueWith(task => next(task.Result));
-                    return null;
-
-                case IRun<TStep, TResult> run:
-                    next(run.Run((TStep)this));
-                    return null;
-
-                case IRunStep<TStep, TResult> runStep:
-                    return runStep.RunStep((TStep)this);
-
-                default:
-                    runner.Run((TStep)this, next);
-                    return null;
-            }
-            
-        }
+        IStep<TResult>? IStep<TResult>.Run(IRunner runner, Action<TResult> next) =>
+            runner.Run((TStep)this, next);
 
         Planner<TResult> IStep<TResult>.GetAwaiter() => new(this);
     }
