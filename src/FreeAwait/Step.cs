@@ -3,12 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace FreeAwait
 {
-    public interface IStep { }
+    public readonly struct Void { }
+
+    public interface IStep 
+    {
+        IStep<object?> Use(IRunner runner);
+    }
 
     [AsyncMethodBuilder(typeof(Planner<>))]
     public interface IStep<TResult>: IStep
-    {            
-        IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
+    {
+        async IStep<object?> IStep.Use(IRunner runner) => await Use(runner);
+        
+        new IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
         IStep<TResult>? Run(IRunner runner, Action<TResult> next);
 
@@ -23,7 +30,6 @@ namespace FreeAwait
 
         Planner<TResult> IStep<TResult>.GetAwaiter() => new(this);
     }
-
 
     public static class Step
     {
