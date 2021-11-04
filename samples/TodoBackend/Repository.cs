@@ -7,18 +7,28 @@ using System.Threading.Tasks;
 namespace TodoBackend
 {
     public class Repository : 
+        IRun<Create, Todo>,
+        IRun<Read, Todo?>,
         IRun<ReadAll, IEnumerable<Todo>>
-    {
-        
-        public Repository(List<Todo> items)
+
+    {   
+        public Repository(Store store)
         {
-            _items = items;
-            _items.Add(new(1, "Test", false));
+            _store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
-        public IEnumerable<Todo> Run(ReadAll step) => _items;
-        
+        public IEnumerable<Todo> Run(ReadAll step) => _store.Todos.Select(pair => pair.Value).OrderBy(item => item.Order);
 
-        private readonly List<Todo> _items;
+        public Todo Run(Create step)
+        {
+            var item = new Todo(_store.NextId(), step.Title, false, step.Order);
+            _store.Todos[item.Id] = item;
+            
+            return item;
+        }
+
+        public Todo? Run(Read step) => _store.Todos.TryGetValue(step.Id, out var item) ? item : default;
+        
+        private readonly Store _store;
     }
 }

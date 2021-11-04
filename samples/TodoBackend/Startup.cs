@@ -29,7 +29,7 @@ namespace TodoBackend
             
             services.AddControllers();
             services.AddFreeAwait();
-            services.AddSingleton<List<Todo>>();
+            services.AddSingleton<Store>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

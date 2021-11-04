@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace FreeAwait
@@ -36,6 +37,8 @@ namespace FreeAwait
         public static Planner<TResult> GetAwaiter<TStep, TResult>(this IStep<TStep, TResult> step)
             where TStep : IStep<TStep, TResult> => step.GetAwaiter();
 
+        
+
         public static IStep<TResult> Result<TResult>(TResult value)
         {
             var planner = new Planner<TResult>();
@@ -49,5 +52,6 @@ namespace FreeAwait
 
         public static IStep<TResult> Suspend<TResult>(Func<IStep<TResult>> resume) => 
             new Suspend<TResult>(resume);
+
     }
 }

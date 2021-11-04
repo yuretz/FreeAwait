@@ -8,12 +8,20 @@ using System.Threading.Tasks;
 
 namespace TodoBackend
 {
-    [Route("api/todos/")]
+    [Route("api/todos")]
     [ApiController]
     public class TodoController : ControllerBase
     {
-        [HttpGet()]
-        public async IStep<IActionResult> Get() => Ok(await new ReadAll());
+        [HttpGet]
+        public async IStep<IActionResult> Get() => Ok((await new ReadAll()).Select(async(item) => await new Locate(item)));
+
+        [HttpPost]
+        public async IStep<IActionResult> Post([FromBody] Create create) => Ok(await create);
+
+        [HttpGet("{id}")]
+        public async IStep<IActionResult> Get([FromRoute] int id) => 
+            await new Read(id) is { } item ? Ok(item) : NotFound();
+
 
     }
 }
