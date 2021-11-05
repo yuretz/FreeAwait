@@ -30,8 +30,11 @@ namespace TodoBackend
             
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+
             services.AddHttpContextAccessor();
+
             services.AddFreeAwait();
+
             services.AddSingleton<Store>();
         }
 
