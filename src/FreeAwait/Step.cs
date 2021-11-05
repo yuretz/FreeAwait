@@ -1,13 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace FreeAwait
 {
+    public readonly struct Void { }
+
+    public interface IStep 
+    {
+        IStep<object?> Use(IRunner runner);
+    }
+
     [AsyncMethodBuilder(typeof(Planner<>))]
-    public interface IStep<TResult>
-    {            
-        IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
+    public interface IStep<TResult>: IStep
+    {
+        async IStep<object?> IStep.Use(IRunner runner) => await Use(runner);
+        
+        new IStep<TResult> Use(IRunner runner) => GetAwaiter().Use(runner).Task;
 
         IStep<TResult>? Run(IRunner runner, Action<TResult> next);
 
@@ -17,36 +26,18 @@ namespace FreeAwait
     public interface IStep<TStep, TResult> : IStep<TResult>
         where TStep : IStep<TStep, TResult>
     {
-        IStep<TResult>? IStep<TResult>.Run(IRunner runner, Action<TResult> next)
-        {
-            switch (runner)
-            {
-                case IRunAsync<TStep, TResult> runAsync:
-                    runAsync.RunAsync((TStep)this).ContinueWith(task => next(task.Result));
-                    return null;
-
-                case IRun<TStep, TResult> run:
-                    next(run.Run((TStep)this));
-                    return null;
-
-                case IRunStep<TStep, TResult> runStep:
-                    return runStep.RunStep((TStep)this);
-
-                default:
-                    runner.Run((TStep)this, next);
-                    return null;
-            }
-            
-        }
+        IStep<TResult>? IStep<TResult>.Run(IRunner runner, Action<TResult> next) =>
+            runner.Run((TStep)this, next);
 
         Planner<TResult> IStep<TResult>.GetAwaiter() => new(this);
     }
-
 
     public static class Step
     {
         public static Planner<TResult> GetAwaiter<TStep, TResult>(this IStep<TStep, TResult> step)
             where TStep : IStep<TStep, TResult> => step.GetAwaiter();
+
+        
 
         public static IStep<TResult> Result<TResult>(TResult value)
         {
@@ -61,5 +52,8 @@ namespace FreeAwait
 
         public static IStep<TResult> Suspend<TResult>(Func<IStep<TResult>> resume) => 
             new Suspend<TResult>(resume);
+
+        public static IStep<IAsyncEnumerable<T>> Sequence<T>(this IEnumerable<IStep<T>> items) =>
+            new Sequence<T>(items);
     }
 }

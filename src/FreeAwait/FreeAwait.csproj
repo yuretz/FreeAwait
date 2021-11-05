@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <AssemblyVersion></AssemblyVersion>
     <Version>0.3.0</Version>

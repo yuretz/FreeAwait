@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FreeAwait.Extensions.AspNetCore\FreeAwait.Extensions.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\FreeAwait\FreeAwait.csproj" />
+  </ItemGroup>
+
+</Project>

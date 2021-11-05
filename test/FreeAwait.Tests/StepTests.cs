@@ -210,17 +210,19 @@ namespace FreeAwait.Tests
             public Task<int> RunAsync(ThreeMore step) => Task.Run(() => step.Number + 3);
         }
 
-        private class DynamicRunner1: IRunner
+        private class DynamicRunner1: IRunMany
         {
-            public void Run<TStep, TResult>(IStep<TStep, TResult> step, Action<TResult> next)
-                where TStep : IStep<TStep, TResult> =>
-                next((TResult)(object)(step switch
+            public IStep? Run(IStep step, Action<object> next)
+            {
+                next(step switch
                 {
                     Count count => count.Text.Length,
                     Twice twice => twice.Number * 2,
                     ThreeMore threeMore => threeMore.Number + 3,
                     _ => throw new NotSupportedException()
-                }));
+                });
+                return default;
+            }
         }
 
         private record Factor(int N) : IStep<Factor, int>;
