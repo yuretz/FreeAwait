@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TodoBackend
@@ -27,7 +28,9 @@ namespace TodoBackend
         public void ConfigureServices(IServiceCollection services)
         {
             
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+            services.AddHttpContextAccessor();
             services.AddFreeAwait();
             services.AddSingleton<Store>();
         }
@@ -41,6 +44,8 @@ namespace TodoBackend
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
 

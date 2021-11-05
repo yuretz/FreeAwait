@@ -4,7 +4,7 @@
     "TodoBackend": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/todos",
+      "launchUrl": "https://www.todobackend.com/specs/index.html?https://localhost:5001/api/todos",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

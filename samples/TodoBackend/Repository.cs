@@ -3,13 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Void = FreeAwait.Void;
 
 namespace TodoBackend
 {
     public class Repository : 
         IRun<Create, Todo>,
         IRun<Read, Todo?>,
-        IRun<ReadAll, IEnumerable<Todo>>
+        IRun<ReadAll, IEnumerable<Todo>>,
+        IRun<Delete, Todo?>,
+        IRun<DeleteAll, Void>,
+        IRun<Update, Todo?>
 
     {   
         public Repository(Store store)
@@ -28,7 +32,34 @@ namespace TodoBackend
         }
 
         public Todo? Run(Read step) => _store.Todos.TryGetValue(step.Id, out var item) ? item : default;
-        
+
+        public Todo? Run(Delete step) => _store.Todos.Remove(step.Id, out var item) ? item : default;
+
+        public Void Run(DeleteAll step)
+        {
+            _store.Todos.Clear();
+            return default;
+        }
+
+        public Todo? Run(Update step)
+        {
+            if(!_store.Todos.TryGetValue(step.Id, out var item))
+            {
+                return default;
+            }
+
+            item = item with
+            {
+                Completed = step.patch.Completed ?? item.Completed,
+                Order = step.patch.Order ?? item.Order,
+                Title = step.patch.Title ?? item.Title
+            };
+
+            _store.Todos[step.Id] = item;
+
+            return item;
+        }
+
         private readonly Store _store;
     }
 }
