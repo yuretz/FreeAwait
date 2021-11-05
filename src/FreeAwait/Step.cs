@@ -53,5 +53,7 @@ namespace FreeAwait
         public static IStep<TResult> Suspend<TResult>(Func<IStep<TResult>> resume) => 
             new Suspend<TResult>(resume);
 
+        public static IStep<IAsyncEnumerable<T>> Sequence<T>(this IEnumerable<IStep<T>> items) =>
+            new Sequence<T>(items);
     }
 }
