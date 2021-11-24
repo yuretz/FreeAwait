@@ -4,6 +4,7 @@
     <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
+	<Version>0.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
