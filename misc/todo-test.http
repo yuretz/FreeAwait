@@ -1,0 +1,42 @@
+POST https://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "foo"
+}
+
+###
+POST https://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "bar",
+    "order": 2
+}
+
+###
+POST https://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "baz",
+    "order": 1
+}
+
+###
+GET https://localhost:5001/api/todos HTTP/1.1
+
+###
+DELETE https://localhost:5001/api/todos/2 HTTP/1.1
+
+###
+PATCH https://localhost:5001/api/todos/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "qux",
+    "completed": true
+}
+
+###
+DELETE https://localhost:5001/api/todos/ HTTP/1.1
