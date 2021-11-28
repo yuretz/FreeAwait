@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{66E6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoBackend", "samples\TodoBackend\TodoBackend.csproj", "{5D31D523-2814-4BA4-AD95-974C1A526D21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalWebApi", "samples\MinimalWebApi\MinimalWebApi.csproj", "{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalWebApi", "samples\MinimalWebApi\MinimalWebApi.csproj", "{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalWebApi.Tests", "samples\MinimalWebApi.Tests\MinimalWebApi.Tests.csproj", "{DE3699C7-6E6B-4655-A422-61DBE4CC0784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE3699C7-6E6B-4655-A422-61DBE4CC0784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE3699C7-6E6B-4655-A422-61DBE4CC0784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE3699C7-6E6B-4655-A422-61DBE4CC0784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE3699C7-6E6B-4655-A422-61DBE4CC0784}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{ACC89DB4-3112-40B6-8D16-7E31AA81C673} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
 		{5D31D523-2814-4BA4-AD95-974C1A526D21} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
 		{F09911CF-A112-4E1B-BEC1-F51CCD3A8C32} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
+		{DE3699C7-6E6B-4655-A422-61DBE4CC0784} = {66E6F77F-81DD-4988-9C59-3FE1F25E21BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14868022-AC29-4954-A356-8764FCF1EBEA}
