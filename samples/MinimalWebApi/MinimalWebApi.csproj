@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FreeAwait.Extensions.AspNetCore\FreeAwait.Extensions.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\FreeAwait\FreeAwait.csproj" />
   </ItemGroup>
 
 </Project>

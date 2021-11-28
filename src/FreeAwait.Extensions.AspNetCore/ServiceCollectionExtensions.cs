@@ -63,10 +63,16 @@ namespace FreeAwait
                 }
             }
 
-            if(options.RegisterServiceRunner)
+#if NET6_0_OR_GREATER
+            services.AddRunner<HttpSteps.Runner>();
+#endif
+
+            if (options.RegisterServiceRunner)
             {
                 services.AddSingleton<IServiceRunner, ServiceRunner>();
             }
+
+
 
             services.AddSingleton<StepActionFilter>();
             if(options.AddGlobalStepFilter)
