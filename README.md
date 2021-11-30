@@ -1,4 +1,6 @@
 # FreeAwait
+[![.NET](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml/badge.svg)](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml)
+
 Await anything for free!
 
 ## What
