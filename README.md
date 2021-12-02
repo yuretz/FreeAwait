@@ -6,6 +6,11 @@ Await anything for free!
 ## Purpose
 FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), that comes without the need to give up on the good old idiomatic C# code style.
 
+## Reasons to use
+- control over side effects, loose coupling and better testability;
+- code that looks more idiomatic, than something you could achieve by composing LINQ expressions, as suggested by other good libraries;
+- it's free, freedom is worth a wait (terrible pun, sorry).
+
 ## Quick example
 Lets start with adding the FreeAwait library to our using directives:
 ```csharp
@@ -14,7 +19,7 @@ using Void = FreeAwait.Void;
 ```
 The second line gives us an actually useful `Void` type, instead of [the fake one](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Void.cs), but feel free to substitute it with [any](https://github.com/louthy/language-ext/blob/main/LanguageExt.Core/DataTypes/Unit/Unit.cs) [other](https://github.com/jbogard/MediatR/blob/master/src/MediatR/Unit.cs) [alternative](https://github.com/dotnet/reactive/blob/main/Rx.NET/Source/src/System.Reactive/Unit.cs), or just roll your own, and contribute to the eventual heat death of the universe like everybody else does.
 
-Now we can declare the following types:
+Anyway, now we can declare the following types:
 ```csharp
 record ReadLine: IStep<ReadLine, string?>;
 record WriteLine(string? Text): IStep<WriteLine, Void>;
@@ -89,25 +94,38 @@ You can find more demo code in [samples](./samples).
             : new Fib(step.N - 1, step.Current + step.Previous, step.Current);
     }
     ```
-* Some static and extension methods that might come in handy. When needed, you can utilize them
-  * to turn any value into an `IStep`
+* Some static and extension methods that might come in handy. When needed, you can utilize them to
+  * turn any value into an `IStep`
     ```csharp
     IStep<TResult> Step.Result<TResult>(TResult value)
     ```
-  * to pass step result into a function:
+  * pass step result into a function:
     ```csharp
     IStep<TNext> IStep<TResult>.PassTo<TResult, TNext>( 
             Func<TResult, IStep<TNext>> next)
     ```
-  * to turn an `IEnumerable<IStep<T>>` into an `IStep<IAsyncEnumerable<T>>`:
+  * turn an `IEnumerable<IStep<T>>` into an `IStep<IAsyncEnumerable<T>>`:
     ```csharp
     IStep<IAsyncEnumerable<T>> IEnumerable<IStep<T>>.Sequence<T>()
     ```
 
 ## ASP.NET extensions
-To be documented
+After adding a reference to `FreeAwait.Extensions.AspNetCore` and a usual `using FreeAwait` directive, add the following line to your dependency registration code in `Program.cs`, like this:
+```csharp
+builder.Services.AddFreeAwait();
+```
+or if you are using traditional `Startup` class, add this to the `ConfigureServices()` method:
+```csharp
+services.AddFreeAwait();
+```
+This registers all exisiting runner classes and makes them available via a universal `IServiceRunner` interface which you can inject into your classes wherever you need it.
 
-## Reasons to use
-- control over side effects, loose coupling and better testability;
-- code that looks more idiomatic, than something you could achieve by composing LINQ expressions, as suggested by other good libraries;
-- it's free, freedom is worth a wait (terrible pun, sorry).
+It also registers a global MVC action filter allowing you to return `IStep<IActionResult>` from your controller actions, pretty neat, huh? Take a look at a full [MVC Todo backend example](./samples/TodoBackend) too. 
+
+If you are a fan of the new ASP.NET Core minimal web API approach, great news for you: it is fully supported too.
+
+The only thing you need to do in order to use `IStep` returning methods as an endpoint handlers, is to pass it through `Results.Extensions.Run()` helper method. 
+But why do I need it, you ask? Becuase [unit testing minimal web APIs in isolation is difficult](https://youtu.be/VuFQtyRmS0E)! Well, I'm glad to tell you, that FreeAwait makes it a piece of cake: look at [this minimal web API example](./samples/MinimalWebApi) and a [full unit test for it](./samples/MinimalWebApi.Tests) and don't worry about `WebApplicationFactory`, because you might not need it.
+
+## Futher info
+If you have a question, or think you found a bug, or have a good idea for a feature and don't mind sharing it, please open an issue and I would be happy to discuss it.
