@@ -7,9 +7,9 @@ Await anything for free!
 FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), that comes without the need to give up on the good old idiomatic C# code style.
 
 ## Reasons to use
-- control over side effects, loose coupling and better testability;
-- code that looks more idiomatic, than something you could achieve by composing LINQ expressions, as suggested by other good libraries;
-- it's free, freedom is worth a wait (terrible pun, sorry).
+* :test_tube: control over side effects, loose coupling and better testability;
+* :scroll: code looks more idiomatic than composed LINQ expressions suggested by other good libraries;
+* :hourglass: it's free, freedom is worth a wait (terrible pun, sorry).
 
 ## Quick example
 Lets start with adding the FreeAwait library to our using directives:
@@ -61,7 +61,6 @@ var name = await new ConsoleIO().Run(Greet());
 You can find more demo code in [samples](./samples).
 
 ## More Features
-
 * Asyncronous step runners are implemented via `IRunAsync<TStep, TResult>` interface like this: 
     ```csharp
     record ReadTextFile(string FileName): IStep<ReadTextFile, string>;
@@ -122,10 +121,10 @@ This registers all exisiting runner classes and makes them available via a unive
 
 It also registers a global MVC action filter allowing you to return `IStep<IActionResult>` from your controller actions, pretty neat, huh? Take a look at a full [MVC Todo backend example](./samples/TodoBackend) too. 
 
-If you are a fan of the new ASP.NET Core minimal web API approach, great news for you: it is fully supported too.
+If you are a fan of the new ASP.NET Core minimal web API approach, great news for you: it is [fully supported too](./samples/MinimalWebApi).
 
 The only thing you need to do in order to use `IStep` returning methods as an endpoint handlers, is to pass it through `Results.Extensions.Run()` helper method. 
-But why do I need it, you ask? Becuase [unit testing minimal web APIs in isolation is difficult](https://youtu.be/VuFQtyRmS0E)! Well, I'm glad to tell you, that FreeAwait makes it a piece of cake: look at [this minimal web API example](./samples/MinimalWebApi) and a [full unit test for it](./samples/MinimalWebApi.Tests) and don't worry about `WebApplicationFactory`, because you might not need it.
+But why do I need it, you ask? Becuase [unit testing minimal web APIs in isolation is difficult](https://youtu.be/VuFQtyRmS0E)! Well, I'm glad to tell you, that FreeAwait makes it a piece of cake: look at a [full unit test for the minimal Todo API](./samples/MinimalWebApi.Tests) and don't worry about `WebApplicationFactory`, because you might not need it.
 
 ## Futher info
 If you have a question, or think you found a bug, or have a good idea for a feature and don't mind sharing it, please open an issue and I would be happy to discuss it.
