@@ -5,6 +5,22 @@
     <Nullable>enable</Nullable>
     <AssemblyVersion></AssemblyVersion>
     <Version>0.5.0</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Yuriy Korolyov</Authors>
+    <Description>Tiny .NET library that implements a free monad-like pattern with C# async/await and can be used as a more functional alternative to dependency injection without forcing you to give up on the good old idiomatic C# code style.</Description>
+    <Copyright>Copyright © Yuriy Korolyov</Copyright>
+    <PackageProjectUrl>https://github.com/yuretz/FreeAwait</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yuretz/FreeAwait</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>functional;async;await;free;monad;dependency;injection</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

@@ -5,6 +5,14 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
 	<Version>0.5.0</Version>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Authors>Yuriy Korolyov</Authors>
+	<Description>FreeAwait extensions for ASP.NET Core</Description>
+	<Copyright>Copyright © Yuriy Korolyov</Copyright>
+	<PackageProjectUrl>https://github.com/yuretz/FreeAwait</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/yuretz/FreeAwait</RepositoryUrl>
+	<PackageTags>functional;async;await;free;monad;dependency;injection</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
