@@ -6,6 +6,7 @@
     <OutputType>Library</OutputType>
 	<Version>0.5.0</Version>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<IsPackable>true</IsPackable>
 	<Authors>Yuriy Korolyov</Authors>
 	<Description>FreeAwait extensions for ASP.NET Core</Description>
 	<Copyright>Copyright © Yuriy Korolyov</Copyright>
