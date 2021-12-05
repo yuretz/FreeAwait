@@ -1,6 +1,6 @@
 # FreeAwait
 [![.NET](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml/badge.svg)](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml)
-![Nuget](https://img.shields.io/nuget/v/FreeAwait)
+[![Nuget](https://img.shields.io/nuget/v/FreeAwait)](https://www.nuget.org/packages/FreeAwait/)
 ![GitHub](https://img.shields.io/github/license/yuretz/FreeAwait)
 
 Await anything for free!
@@ -14,7 +14,7 @@ FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# 
 * :hourglass: it's free, freedom is worth a wait (terrible pun, sorry).
 
 ## Quick example
-Lets start with adding the FreeAwait library to our using directives:
+Lets start with installing the [`FreeAwait` package from NuGet](https://www.nuget.org/packages/FreeAwait/) and adding to our using directives:
 ```csharp
 using FreeAwait;
 using Void = FreeAwait.Void;
@@ -111,7 +111,7 @@ You can find more demo code in [samples](./samples).
     ```
 
 ## ASP.NET extensions
-After adding a reference to `FreeAwait.Extensions.AspNetCore` and a usual `using FreeAwait` directive, add the following line to your dependency registration code in `Program.cs`, like this:
+After adding a reference to [`FreeAwait.Extensions.AspNetCore` from NuGet](https://www.nuget.org/packages/FreeAwait.Extensions.AspNetCore/) and a usual `using FreeAwait` directive, add the following line to your dependency registration code in `Program.cs`, like this:
 ```csharp
 builder.Services.AddFreeAwait();
 ```
