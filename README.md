@@ -1,5 +1,7 @@
 # FreeAwait
 [![.NET](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml/badge.svg)](https://github.com/yuretz/FreeAwait/actions/workflows/build.yml)
+![Nuget](https://img.shields.io/nuget/v/FreeAwait)
+![GitHub](https://img.shields.io/github/license/yuretz/FreeAwait)
 
 Await anything for free!
 
@@ -7,7 +9,7 @@ Await anything for free!
 FreeAwait is a tiny .NET library implementing a free monad-like pattern with C# async/await. It can be used as a more [functional alternative to dependency injection](https://blog.ploeh.dk/2017/01/27/from-dependency-injection-to-dependency-rejection/), that comes without the need to give up on the good old idiomatic C# code style.
 
 ## Reasons to use
-* :test_tube: control over side effects, loose coupling and better testability;
+* :heavy_check_mark: control over side effects, loose coupling and better testability;
 * :scroll: code looks more idiomatic than composed LINQ expressions suggested by other good libraries;
 * :hourglass: it's free, freedom is worth a wait (terrible pun, sorry).
 
