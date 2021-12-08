@@ -121,12 +121,12 @@ services.AddFreeAwait();
 ```
 This registers all exisiting runner classes and makes them available via a universal `IServiceRunner` interface which you can inject into your classes wherever you need it.
 
-It also registers a global MVC action filter allowing you to return `IStep<IActionResult>` from your controller actions, pretty neat, huh? Take a look at a full [MVC Todo backend example](./samples/TodoBackend) too. 
+It also registers a global MVC action filter allowing you to return `IStep<IActionResult>` from your controller actions, pretty neat, huh? Take a look at a full [MVC Todo backend example](./samples/TodoBackend). 
 
 If you are a fan of the new ASP.NET Core minimal web API approach, great news for you: it is [fully supported too](./samples/MinimalWebApi).
 
 The only thing you need to do in order to use `IStep` returning methods as an endpoint handlers, is to pass it through `Results.Extensions.Run()` helper method. 
-But why do I need it, you ask? Becuase [unit testing minimal web APIs in isolation is difficult](https://youtu.be/VuFQtyRmS0E)! Well, I'm glad to tell you, that FreeAwait makes it a piece of cake: look at a [full unit test for the minimal Todo API](./samples/MinimalWebApi.Tests) and don't worry about `WebApplicationFactory`, because you might not need it.
+But why is it need it, you ask? Because [unit testing minimal web APIs in isolation is difficult](https://youtu.be/VuFQtyRmS0E)! Well, you can see yourself how FreeAwait makes it a piece of cake: take look at a [full unit test for the minimal Todo API](./samples/MinimalWebApi.Tests) and don't worry about `WebApplicationFactory`, because you might not need it.
 
 ## Futher info
 If you have a question, or think you found a bug, or have a good idea for a feature and don't mind sharing it, please open an issue and I would be happy to discuss it.
