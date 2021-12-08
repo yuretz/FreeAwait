@@ -26,7 +26,14 @@ namespace FreeAwait
 
         public void OnCompleted(Action continuation)
         {
-            _continuation = continuation;
+            if (IsCompleted)
+            {
+                continuation();
+            }
+            else
+            {
+                _continuation = continuation;
+            }   
         }
 
         public TResult GetResult() =>
